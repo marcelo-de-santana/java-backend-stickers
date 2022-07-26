@@ -2,12 +2,10 @@ import java.awt.Graphics2D;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
-import java.nio.file.FileAlreadyExistsException;
 import javax.imageio.ImageIO;
-import javax.imageio.stream.ImageOutputStream;
 
 public class Figurinhas {
     
@@ -36,8 +34,8 @@ public class Figurinhas {
         graphics.drawString("TOPZERA", 100, novaAltura - 100);
 
         //escrever a nova imagem em um arquivo
-        ImageIO.write(novaImagem, "png", (ImageOutputStream) new FileAlreadyExistsException(nomeArquivo));
-
+        ImageIO.write(novaImagem, "png", new File(nomeArquivo));
+    
     }
- 
+
 }

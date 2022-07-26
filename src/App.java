@@ -11,7 +11,7 @@ import java.util.Map;
 public class App {
     public static void main(String[] args) throws Exception {
         //fazer uma conexão HTTP  e buscar os top 250 filmes
-        String url = "https://alura-filmes.herokuapp.com/conteudos";
+        String url = "https://api.mocki.io/v2/549a5d8b/Top250TVs";
         URI address = URI.create(url); 
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder(address).GET().build();
