@@ -11,30 +11,35 @@ import java.util.Map;
 public class App {
     public static void main(String[] args) throws Exception {
         //fazer uma conexão HTTP  e buscar os top 250 filmes
-        String url = "https://api.mocki.io/v2/549a5d8b/Top250TVs";
+        String url = "https://legis.senado.leg.br/dadosabertos/senador/lista/atual.json";
         URI address = URI.create(url); 
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder(address).GET().build();
         HttpResponse<String> response = client.send(request,BodyHandlers.ofString());
         String body = response.body();
+
         //extrair só os dados que interessam (título, poster, classificação)(expressões regulares)
         JsonParse parser = new JsonParse();
         List<Map<String, String>> listaDeFilmes = parser.parse(body);
-        //exibir e manipular os dados 
-        for (Map<String,String> movie : listaDeFilmes) {
+
+        //exibir e manipular os dados
+        Figurinhas figurinhas = new Figurinhas();
         
-            String urlImagem = movie.get("image");
+        for (int i =0; i < 3; i++){ 
+        
+            Map<String,String> movie = listaDeFilmes.get(i);
+        
+            String urlImagem = movie.get("image").replaceAll("(@+)(.*).jpg$","$1.jpg");
+
             String titulo = movie.get("title");
+
             InputStream inputStream = new URL(urlImagem).openStream();
+            String nomeArquivo = "saida/" + titulo + ".png";
             
-            String nomeArquivo = titulo + ".png";
-            
-            Figurinhas figurinhas = new Figurinhas();
+
             figurinhas.criar(inputStream, nomeArquivo);
 
-            System.out.println(movie.get("title")); 
-            System.out.println(movie.get("image")); 
-            System.out.println(movie.get("imDbRating")); 
+            System.out.println(movie.get(titulo));
         };
     }
 }

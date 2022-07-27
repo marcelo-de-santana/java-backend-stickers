@@ -27,5 +27,5 @@ public class JsonParse {
             dados.add(atributosItem);
         }
         return dados;
-    } 
+    }
 }
