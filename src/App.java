@@ -1,45 +1,35 @@
 import java.io.InputStream;
-import java.net.URI;
 import java.net.URL;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.net.http.HttpResponse.BodyHandlers;
 import java.util.List;
-import java.util.Map;
 
 public class App {
     public static void main(String[] args) throws Exception {
         //fazer uma conexão HTTP  e buscar os top 250 filmes
-        String url = "https://legis.senado.leg.br/dadosabertos/senador/lista/atual.json";
-        URI address = URI.create(url); 
-        HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder(address).GET().build();
-        HttpResponse<String> response = client.send(request,BodyHandlers.ofString());
-        String body = response.body();
+        //String url = "https://imdb-api.com/en/API/Top250Movies/k_a0hev0lm";
+        //ExtratorDeConteudo extrator = new ExtratorDeConteudoDoIMDB();
+        
+        String url = "https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY&start_date=2022-06-12&end_date=2022-06-14";
+        ExtratorDeConteudo extrator = new ExtratorDeConteudoDaNasa();
 
-        //extrair só os dados que interessam (título, poster, classificação)(expressões regulares)
-        JsonParse parser = new JsonParse();
-        List<Map<String, String>> listaDeFilmes = parser.parse(body);
+        ClientHttp http = new ClientHttp();
+        String json = http.searchData(url);
 
         //exibir e manipular os dados
+        List<Conteudo> conteudos = extrator.extraiConteudos(json);
+
         Figurinhas figurinhas = new Figurinhas();
         
         for (int i =0; i < 3; i++){ 
         
-            Map<String,String> movie = listaDeFilmes.get(i);
-        
-            String urlImagem = movie.get("image").replaceAll("(@+)(.*).jpg$","$1.jpg");
+            Conteudo conteudo = conteudos.get(i);
 
-            String titulo = movie.get("title");
-
-            InputStream inputStream = new URL(urlImagem).openStream();
-            String nomeArquivo = "saida/" + titulo + ".png";
-            
+            InputStream inputStream = new URL(conteudo.getUrlImagem()).openStream();
+            String nomeArquivo = "src/saida/" + conteudo.getTitulo() + ".png";
 
             figurinhas.criar(inputStream, nomeArquivo);
 
-            System.out.println(movie.get(titulo));
+            System.out.println(conteudo.getTitulo());
+            System.out.println();
         };
     }
 }
